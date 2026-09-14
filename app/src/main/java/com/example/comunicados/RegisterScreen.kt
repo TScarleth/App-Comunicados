@@ -28,6 +28,8 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     // Estado para mostrar/ocultar contraseña //
     var passwordVisible by remember { mutableStateOf(false) }
+    // Estado para errores de validación local //
+    var validationError by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -57,7 +59,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de Correo Electrónico //
+        // Campo de correo electrónico //
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -68,7 +70,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de Contraseña //
+        // Campo de contraseña //
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -88,14 +90,27 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Botón  d Registrarse //
+        // Botón  d registrarse //
         // Solo se muestra si no se ha registrado con éxito //
         if (successMessage.isEmpty()) {
             Button(
                 onClick = {
-                    if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-                        val newUser = User(name, email, password)
-                        onUserRegistered(newUser)
+                    // Validar campos vacíos //
+                    if (name.isEmpty()) {
+                        validationError = "El campo nombre es obligatorio."
+                    } else if (email.isEmpty()) {
+                        validationError = "El campo correo electrónico es obligatorio."
+                    } else if (password.isEmpty()) {
+                        validationError = "El campo contraseña es obligatorio."
+                    } else {
+                        // Intentar registrar al usuario //
+                        try {
+                            val newUser = User(name, email, password)
+                            validationError = "" // Limpiar error previo //
+                            onUserRegistered(newUser)
+                        } catch (e: Exception) {
+                            validationError = "Ocurrió un problema al registrar el usuario."
+                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -104,11 +119,17 @@ fun RegisterScreen(
             }
         }
 
+        // Mensaje de error de validación o del sistema //
+        if (validationError.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = validationError, color = MaterialTheme.colorScheme.error)
+        }
+
         // Mensaje de éxito //
         if (successMessage.isNotEmpty()) {
-            Text(text = successMessage, color = MaterialTheme.colorScheme.primary)
+            Text(text = successMessage, color = MaterialTheme.colorScheme.secondary)
             Spacer(modifier = Modifier.height(16.dp))
-            // Botón Volver al Login //
+            // Botón volver al Login //
             Button(
                 onClick = onBackToLogin,
                 modifier = Modifier.fillMaxWidth()

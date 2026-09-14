@@ -30,6 +30,13 @@ fun TextCommunicationScreen(onBack: () -> Unit) {
             color = MaterialTheme.colorScheme.primary
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Escribe tu mensaje y elige la voz que prefieras.",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
         Spacer(modifier = Modifier.height(24.dp))
 
         // Preferencia de voz //

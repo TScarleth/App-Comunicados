@@ -11,3 +11,8 @@ data class User(
         return email == emailInput && pass == passInput
     }
 }
+
+// Función de extensión para formatear elnombre //
+fun String.nombreFormateado(): String {
+    return this.split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
+}

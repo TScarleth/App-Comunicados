@@ -9,35 +9,37 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
+// Esquema de Colores Oscuro (Mantenido para compatibilidad) //
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = LilaPastelLight,
+    secondary = LilaPastelPrimary,
+    background = Color(0xFF1B1B1B),
+    surface = Color(0xFF1B1B1B),
+    onPrimary = LilaPastelDark,
+    onSecondary = BlancoPuro,
+    onBackground = BlancoPuro,
+    onSurface = BlancoPuro
 )
 
+// Esquema de Colores Claro (Paleta Pistacho y Lila) //
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = LilaPastelPrimary,
+    secondary = LilaPastelIntenso, // Lila más intenso para la bienvenida //
+    background = PistachoPastelFondo, // Fondo verde pistacho claro //
+    surface = PistachoPastelFondo,
+    onPrimary = BlancoPuro,
+    onSecondary = TextoOscuro,
+    onBackground = TextoOscuro,
+    onSurface = TextoOscuro
 )
 
 @Composable
 fun ComunicadosTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // Desactivado para usar nuestra paleta //
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

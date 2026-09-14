@@ -37,7 +37,7 @@ fun LoginScreen(
     ) {
         // Título de la app //
         Text(
-            text = "Comunicados :)",
+            text = "Cue :)",
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary

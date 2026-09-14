@@ -44,7 +44,7 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
     ) {
         // Título d la pantalla //
         Text(
-            text = "Comunicados :)",
+            text = "Cue :)",
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
@@ -62,7 +62,7 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
 
         // Mensaje de bienvenida //
         Text(
-            text = "¡Bienvenido, $userName! ¿Cómo podemos ayudarte hoy?",
+            text = "¡Bienvenido, ${userName.nombreFormateado()}! ¿Cómo podemos ayudarte hoy?",
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.secondary
@@ -103,7 +103,7 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Formas de comunicación //
-        Text("Formas de comunicación:", fontWeight = FontWeight.Bold)
+        Text("¿Cómo quieres comunicarte?", fontWeight = FontWeight.Bold)
         
         // Campo para filtrar opciones //
         OutlinedTextField(
@@ -144,7 +144,15 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Checklist //
-        Text("Opciones utilizadas:", fontWeight = FontWeight.Bold)
+        Text("¿Qué ayuda necesitas?", fontWeight = FontWeight.Bold)
+        
+        Text(
+            text = "Selecciona las opciones que te resulten más cómodas.",
+            style = MaterialTheme.typography.bodySmall
+        )
+        
+        Spacer(modifier = Modifier.height(8.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(checked = useSignLanguage, onCheckedChange = { useSignLanguage = it })
             Text("Lengua de señas")
