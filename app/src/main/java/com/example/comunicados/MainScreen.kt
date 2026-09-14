@@ -1,5 +1,6 @@
 package com.example.comunicados
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,17 +18,22 @@ import com.example.comunicados.ui.theme.ComunicadosTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
     // Estados para los componentes //
-    var message by remember { mutableStateOf("") }
     var useSignLanguage by remember { mutableStateOf(false) }
     var useTextToSpeech by remember { mutableStateOf(false) }
-    var voiceType by remember { mutableStateOf("Masculina") }
     var expanded by remember { mutableStateOf(false) }
     var communicationType by remember { mutableStateOf("Selecciona tipo") }
+    // Estado para filtrar formas de comunicación //
+    var commSearchQuery by remember { mutableStateOf("") }
     
     val communicationOptions = listOf("Señas", "Texto", "Pictogramas", "Escritura")
     val typeOptions = listOf("Formal", "Informal", "Emergencia")
+
+    // Filtrar formas de comunicación //
+    val filteredOptions = communicationOptions.filter { 
+        it.contains(commSearchQuery, ignoreCase = true) 
+    }
 
     Column(
         modifier = Modifier
@@ -52,81 +58,19 @@ fun MainScreen() {
             style = MaterialTheme.typography.bodyMedium
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // Campo para escribir mensaje ///
-        OutlinedTextField(
-            value = message,
-            onValueChange = { message = it },
-            label = { Text("Mensaje para convertir") },
-            modifier = Modifier.fillMaxWidth()
+        // Mensaje de bienvenida //
+        Text(
+            text = "¡Bienvenido, $userName! ¿Cómo podemos ayudarte hoy?",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.secondary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón de voz
-        Button(onClick = { /* Acción para voz */ }) {
-            Text("Convertir texto en voz")
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Grilla con formas de comunicación //
-        Text("Formas de comunicación:", fontWeight = FontWeight.Bold)
-        Box(modifier = Modifier.height(150.dp)) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(communicationOptions) { option ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                    ) {
-                        Box(Modifier.padding(16.dp), contentAlignment = Alignment.Center) {
-                            Text(option)
-                        }
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Checklist  //
-        Text("Opciones utilizadas:", fontWeight = FontWeight.Bold)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = useSignLanguage, onCheckedChange = { useSignLanguage = it })
-            Text("Lengua de señas")
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = useTextToSpeech, onCheckedChange = { useTextToSpeech = it })
-            Text("Texto a voz")
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Radio buttons para tipo de voz //
-        Text("Preferencia de voz:", fontWeight = FontWeight.Bold)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            RadioButton(
-                selected = voiceType == "Masculina",
-                onClick = { voiceType = "Masculina" }
-            )
-            Text("Masculina")
-            Spacer(modifier = Modifier.width(16.dp))
-            RadioButton(
-                selected = voiceType == "Femenina",
-                onClick = { voiceType = "Femenina" }
-            )
-            Text("Femenina")
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Combo box para tipo de comunicación//
+        // Contexto de la comunicación //
         Text("Contexto de la comunicación:", fontWeight = FontWeight.Bold)
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -155,6 +99,60 @@ fun MainScreen() {
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Formas de comunicación //
+        Text("Formas de comunicación:", fontWeight = FontWeight.Bold)
+        
+        // Campo para filtrar opciones //
+        OutlinedTextField(
+            value = commSearchQuery,
+            onValueChange = { commSearchQuery = it },
+            label = { Text("Buscar opción") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Box(modifier = Modifier.height(150.dp)) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(filteredOptions) { option ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { 
+                                if (option == "Texto") {
+                                    onTextOptionClick()
+                                }
+                            },
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                    ) {
+                        Box(Modifier.padding(16.dp), contentAlignment = Alignment.Center) {
+                            Text(option)
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Checklist //
+        Text("Opciones utilizadas:", fontWeight = FontWeight.Bold)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = useSignLanguage, onCheckedChange = { useSignLanguage = it })
+            Text("Lengua de señas")
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = useTextToSpeech, onCheckedChange = { useTextToSpeech = it })
+            Text("Texto a voz")
+        }
         
         Spacer(modifier = Modifier.height(32.dp))
     }
@@ -164,6 +162,6 @@ fun MainScreen() {
 @Composable
 fun MainScreenPreview() {
     ComunicadosTheme {
-        MainScreen()
+        MainScreen(userName = "Usuario", onTextOptionClick = {})
     }
 }

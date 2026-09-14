@@ -32,6 +32,8 @@ class MainActivity : ComponentActivity() {
                 var loginError by remember { mutableStateOf("") }
                 var registerError by remember { mutableStateOf("") }
                 var registerSuccess by remember { mutableStateOf("") }
+                // Nombre del usuario logueado //
+                var loggedInUserName by remember { mutableStateOf("") }
                 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
@@ -45,9 +47,11 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onForgotPasswordClick = { navController.navigate("recover_password") },
                                     onLoginSubmit = { email, pass ->
-                                        val user = userList.find { it.email == email && it.pass == pass }
+                                        // Validar usuario //
+                                        val user = userList.find { it.checkCredentials(email, pass) }
                                         if (user != null) {
                                             loginError = ""
+                                            loggedInUserName = user.name
                                             navController.navigate("main")
                                         } else {
                                             loginError = "El correo o la contraseña no son correctos"
@@ -79,7 +83,13 @@ class MainActivity : ComponentActivity() {
                                 RecoverPasswordScreen(onBackToLogin = { navController.popBackStack() })
                             }
                             composable("main") {
-                                MainScreen()
+                                MainScreen(
+                                    userName = loggedInUserName,
+                                    onTextOptionClick = { navController.navigate("text_communication") }
+                                )
+                            }
+                            composable("text_communication") {
+                                TextCommunicationScreen(onBack = { navController.popBackStack() })
                             }
                         }
                     }
