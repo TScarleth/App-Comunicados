@@ -26,8 +26,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComunicadosTheme {
                 val navController = rememberNavController()
-                // Array para guardar hasta 5 usuarios //
-                val userList = remember { mutableStateListOf<User>() }
+                // Usuarios iniciales //
+                val userList = remember {
+                    mutableStateListOf(
+                        User("Usuario 1", "usuario1@gmail.com", "123456"),
+                        User("Usuario 2", "usuario2@gmail.com", "123456"),
+                        User("Usuario 3", "usuario3@gmail.com", "123456"),
+                        User("Usuario 4", "usuario4@gmail.com", "123456"),
+                        User("Usuario 5", "usuario5@gmail.com", "123456")
+                    )
+                }
                 // Estados para mensajes de error //
                 var loginError by remember { mutableStateOf("") }
                 var registerError by remember { mutableStateOf("") }
@@ -52,7 +60,9 @@ class MainActivity : ComponentActivity() {
                                         if (user != null) {
                                             loginError = ""
                                             loggedInUserName = user.name
-                                            navController.navigate("main")
+                                            navController.navigate("main") {
+                                                popUpTo("login") { inclusive = true }
+                                            }
                                         } else {
                                             loginError = "El correo o la contraseña no son correctos"
                                         }
@@ -63,14 +73,9 @@ class MainActivity : ComponentActivity() {
                             composable("register") {
                                 RegisterScreen(
                                     onUserRegistered = { newUser ->
-                                        if (userList.size < 5) {
-                                            userList.add(newUser)
-                                            registerError = ""
-                                            registerSuccess = "¡Se ha creado su usuario de manera exitosa!"
-                                        } else {
-                                            registerError = "Se ha alcanzado el límite de 5 usuarios"
-                                            registerSuccess = ""
-                                        }
+                                        userList.add(newUser)
+                                        registerError = ""
+                                        registerSuccess = "¡Se ha creado su usuario de manera exitosa!"
                                     },
                                     errorMessage = registerError,
                                     successMessage = registerSuccess,

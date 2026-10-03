@@ -115,9 +115,10 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Grilla adaptativa de opciones //
         Box(modifier = Modifier.height(150.dp)) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+                columns = GridCells.Adaptive(minSize = 140.dp),
                 contentPadding = PaddingValues(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -136,6 +137,75 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
                         Box(Modifier.padding(16.dp), contentAlignment = Alignment.Center) {
                             Text(option)
                         }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Tabla de formas de comunicación //
+        Text("Información de formas de comunicación:", fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                // Encabezados de la tabla //
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Forma de comunicación",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Descripción",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1.5f),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                // Filas de la tabla //
+                val tableData = listOf(
+                    "Señas" to "Comunicación mediante lengua de señas.",
+                    "Texto" to "Comunicación escrita y conversión de texto a voz.",
+                    "Pictogramas" to "Comunicación mediante imágenes o símbolos.",
+                    "Escritura" to "Ingreso de mensajes mediante texto."
+                )
+
+                tableData.forEachIndexed { index, (forma, descripcion) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = forma,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.weight(1f),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = descripcion,
+                            modifier = Modifier.weight(1.5f),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                    if (index < tableData.size - 1) {
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     }
                 }
             }

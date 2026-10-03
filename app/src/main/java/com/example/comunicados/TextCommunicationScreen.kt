@@ -1,20 +1,42 @@
 package com.example.comunicados
 
+import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.comunicados.ui.theme.ComunicadosTheme
+import java.util.Locale
 
 @Composable
 fun TextCommunicationScreen(onBack: () -> Unit) {
     // Estados para la comunicación por texto //
     var message by remember { mutableStateOf("") }
     var voiceType by remember { mutableStateOf("Masculina") }
+
+    // Configurar texto a voz //
+    val context = LocalContext.current
+    var tts by remember { mutableStateOf<TextToSpeech?>(null) }
+
+    DisposableEffect(context) {
+        lateinit var textToSpeech: TextToSpeech
+        textToSpeech = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                textToSpeech.language = Locale.forLanguageTag("es-ES")
+            }
+        }
+        tts = textToSpeech
+
+        onDispose {
+            textToSpeech.stop()
+            textToSpeech.shutdown()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -69,7 +91,23 @@ fun TextCommunicationScreen(onBack: () -> Unit) {
 
         // Botón de voz //
         Button(
-            onClick = { /* Acción básica */ },
+            onClick = {
+                if (message.isNotBlank() && tts != null) {
+                    // Seleccionar voz según preferencia //
+                    val targetGender = if (voiceType == "Masculina") "male" else "female"
+                    val matchedVoice = tts?.voices?.find { voice ->
+                        voice.name.lowercase().contains(targetGender)
+                    }
+                    if (matchedVoice != null) {
+                        tts?.voice = matchedVoice
+                        tts?.setPitch(1.0f)
+                    } else {
+                        tts?.setPitch(if (voiceType == "Masculina") 0.8f else 1.2f)
+                    }
+                    // Reproducir el mensaje //
+                    tts?.speak(message, TextToSpeech.QUEUE_FLUSH, null, null)
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Convertir texto en voz")
