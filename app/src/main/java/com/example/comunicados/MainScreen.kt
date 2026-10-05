@@ -18,19 +18,24 @@ import com.example.comunicados.ui.theme.ComunicadosTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
+fun MainScreen(
+    userName: String,
+    onWriteClick: () -> Unit,
+    onSpeakClick: () -> Unit,
+    onSearchDeviceClick: () -> Unit
+) {
     // Estados para los componentes //
     var useSignLanguage by remember { mutableStateOf(false) }
     var useTextToSpeech by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
     var communicationType by remember { mutableStateOf("Selecciona tipo") }
-    // Estado para filtrar formas de comunicación //
+    // Estado para filtrar opciones //
     var commSearchQuery by remember { mutableStateOf("") }
     
-    val communicationOptions = listOf("Señas", "Texto", "Pictogramas", "Escritura")
+    val communicationOptions = listOf("Escribir", "Hablar", "Buscar dispositivo")
     val typeOptions = listOf("Formal", "Informal", "Emergencia")
 
-    // Filtrar formas de comunicación //
+    // Filtrar opciones //
     val filteredOptions = communicationOptions.filter { 
         it.contains(commSearchQuery, ignoreCase = true) 
     }
@@ -42,7 +47,7 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título d la pantalla //
+        // Título de la pantalla //
         Text(
             text = "Cue :)",
             style = MaterialTheme.typography.headlineLarge,
@@ -128,8 +133,10 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { 
-                                if (option == "Texto") {
-                                    onTextOptionClick()
+                                when (option) {
+                                    "Escribir" -> onWriteClick()
+                                    "Hablar" -> onSpeakClick()
+                                    "Buscar dispositivo" -> onSearchDeviceClick()
                                 }
                             },
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
@@ -178,10 +185,9 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
 
                 // Filas de la tabla //
                 val tableData = listOf(
-                    "Señas" to "Comunicación mediante lengua de señas.",
-                    "Texto" to "Comunicación escrita y conversión de texto a voz.",
-                    "Pictogramas" to "Comunicación mediante imágenes o símbolos.",
-                    "Escritura" to "Ingreso de mensajes mediante texto."
+                    "Escribir" to "Permite redactar mensajes de texto.",
+                    "Hablar" to "Permite convertir texto en voz y comunicarse verbalmente.",
+                    "Buscar dispositivo" to "Permite acceder a la función Buscar dispositivo."
                 )
 
                 tableData.forEachIndexed { index, (forma, descripcion) ->
@@ -240,6 +246,11 @@ fun MainScreen(userName: String, onTextOptionClick: () -> Unit) {
 @Composable
 fun MainScreenPreview() {
     ComunicadosTheme {
-        MainScreen(userName = "Usuario", onTextOptionClick = {})
+        MainScreen(
+            userName = "Usuario",
+            onWriteClick = {},
+            onSpeakClick = {},
+            onSearchDeviceClick = {}
+        )
     }
 }

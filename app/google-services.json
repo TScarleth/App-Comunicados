@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "879394169630",
+    "project_id": "cue-560d8",
+    "storage_bucket": "cue-560d8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879394169630:android:a018ac357174f215359f0f",
+        "android_client_info": {
+          "package_name": "com.example.comunicados"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbuD_eF_GF7OYDtVMBlr1G6k91ivCBh90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

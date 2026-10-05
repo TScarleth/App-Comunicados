@@ -9,13 +9,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.comunicados.ui.theme.ComunicadosTheme
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun RecoverPasswordScreen(onBackToLogin: () -> Unit) {
     // Estado para el campo de correo //
     var email by remember { mutableStateOf("") }
-    // Estado para mostrar el mensaje de éxito
-    var showMessage by remember { mutableStateOf(false) }
+    // Estados para mensajes de éxito y error //
+    var successMessage by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
+
+    // Instancia de Firebase Auth //
+    val auth = FirebaseAuth.getInstance()
 
     Column(
         modifier = Modifier
@@ -24,7 +29,7 @@ fun RecoverPasswordScreen(onBackToLogin: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Título  pantalla //
+        // Título de la pantalla //
         Text(
             text = "Recuperar contraseña",
             style = MaterialTheme.typography.headlineMedium,
@@ -47,24 +52,50 @@ fun RecoverPasswordScreen(onBackToLogin: () -> Unit) {
 
         // Botón de Recuperar contraseña //
         Button(
-            onClick = { showMessage = true },
+            onClick = {
+                if (email.isBlank()) {
+                    errorMessage = "Ingresa tu correo electrónico."
+                    successMessage = ""
+                } else {
+                    // Enviar correo de recuperación con Firebase //
+                    auth.sendPasswordResetEmail(email.trim())
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                errorMessage = ""
+                                successMessage = "Se ha enviado un correo para restablecer tu contraseña."
+                            } else {
+                                successMessage = ""
+                                errorMessage = "No se pudo enviar el correo de recuperación. Verifica el correo ingresado."
+                            }
+                        }
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Recuperar contraseña")
         }
 
-        // Mensaje de confirmación //
-        if (showMessage) {
+        // Mensaje de éxito //
+        if (successMessage.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Se ha solicitado la recuperación para: $email",
+                text = successMessage,
                 color = MaterialTheme.colorScheme.secondary
+            )
+        }
+
+        // Mensaje de error //
+        if (errorMessage.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Vínculo para volver al Login//
+        // Vínculo para volver al Login //
         TextButton(onClick = onBackToLogin) {
             Text("Volver al Login")
         }
