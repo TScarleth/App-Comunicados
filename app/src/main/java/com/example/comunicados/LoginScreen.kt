@@ -1,18 +1,32 @@
 package com.example.comunicados
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.comunicados.ui.theme.ComunicadosTheme
 
 @Composable
@@ -20,87 +34,294 @@ fun LoginScreen(
     onRegisterClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     onLoginSubmit: (String, String) -> Unit,
-    errorMessage: String
+    errorMessage: String,
+    onBackClick: (() -> Unit)? = null
 ) {
-    // Estados para los campos de texto //
+    // Estados para email, contraseña y visibilidad //
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    // Estado para mostrar/ocultar contraseña //
     var passwordVisible by remember { mutableStateOf(false) }
 
-    Column(
+    // Fondo blanco principal con desplazamiento //
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(Color.White)
     ) {
-        // Título de la app //
-        Text(
-            text = "Cue :)",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Campo de Correo Electrónico //
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo electrónico") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Campo de Contraseña //
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Contraseña") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            singleLine = true,
-            trailingIcon = {
-                val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                val description = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
-
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = image, contentDescription = description)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 28.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Botón de flecha para volver //
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                IconButton(
+                    onClick = { onBackClick?.invoke() },
+                    modifier = Modifier.size(36.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
+                        contentDescription = "Volver",
+                        tint = Color(0xFF2D3748)
+                    )
                 }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Logo  //
+            Image(
+                painter = painterResource(id = R.drawable.cue_logo),
+                contentDescription = "Logo Cue",
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(140.dp)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Título  //
+            Text(
+                text = "¡Bienvenid@ a Cue!",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1D3B5E),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            // Subtítulo //
+            Text(
+                text = "Tu nuevo apoyo en la comunicación :)",
+                fontSize = 15.sp,
+                color = Color(0xFF708090),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Campo correo electrónico //
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                placeholder = {
+                    Text("Correo electrónico", color = Color(0xFF9E9E9E), fontSize = 15.sp)
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Email,
+                        contentDescription = null,
+                        tint = Color(0xFF757575)
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(28.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedBorderColor = Color(0xFF35A7E8),
+                    unfocusedBorderColor = Color(0xFFE0E0E0),
+                    focusedTextColor = Color(0xFF212121),
+                    unfocusedTextColor = Color(0xFF212121)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Campo de contraseña //
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                placeholder = {
+                    Text("Contraseña", color = Color(0xFF9E9E9E), fontSize = 15.sp)
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Lock,
+                        contentDescription = null,
+                        tint = Color(0xFF757575)
+                    )
+                },
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña",
+                            tint = Color(0xFF757575)
+                        )
+                    }
+                },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(28.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedBorderColor = Color(0xFF35A7E8),
+                    unfocusedBorderColor = Color(0xFFE0E0E0),
+                    focusedTextColor = Color(0xFF212121),
+                    unfocusedTextColor = Color(0xFF212121)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Botónde Iniciar Sesión //
+            Button(
+                onClick = { onLoginSubmit(email, password) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFEE8BA3)
+                )
+            ) {
+                Text(
+                    text = "Iniciar sesión",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            // Mensaje de error de autenticación //
+            if (errorMessage.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Enlace ¿Olvidaste tu contraseña? //
+            TextButton(onClick = onForgotPasswordClick) {
+                Text(
+                    text = "¿Olvidaste tu contraseña?",
+                    color = Color(0xFF35A7E8),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = Color(0xFFE0E0E0),
+                    thickness = 1.dp
+                )
+                Text(
+                    text = "o",
+                    color = Color(0xFF9E9E9E),
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = Color(0xFFE0E0E0),
+                    thickness = 1.dp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón crear Cuenta //
+            Button(
+                onClick = onRegisterClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFE1F5FE)
+                )
+            ) {
+                Text(
+                    text = "Crear cuenta",
+                    color = Color(0xFF35A7E8),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+
+            Spacer(modifier = Modifier.height(90.dp))
+        }
+
+
+        BottomWavesDecoration(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(85.dp)
+                .align(Alignment.BottomCenter)
+        )
+    }
+}
+
+
+@Composable
+private fun BottomWavesDecoration(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val width = size.width
+        val height = size.height
+
+        val pinkPath = Path().apply {
+            moveTo(0f, height)
+            lineTo(0f, height * 0.35f)
+            cubicTo(
+                width * 0.25f, height * 0.15f,
+                width * 0.5f, height * 0.65f,
+                width * 0.85f, height * 0.85f
+            )
+            lineTo(width, height)
+            close()
+        }
+        drawPath(
+            path = pinkPath,
+            color = Color(0xFFFAD1DC)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Botón Iniciar Sesión //
-        Button(
-            onClick = { onLoginSubmit(email, password) },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Iniciar sesión")
+        val bluePath = Path().apply {
+            moveTo(width, height)
+            lineTo(width, height * 0.30f)
+            cubicTo(
+                width * 0.75f, height * 0.10f,
+                width * 0.55f, height * 0.70f,
+                width * 0.25f, height * 0.88f
+            )
+            lineTo(0f, height)
+            close()
         }
-
-        // Mensaje de error (credenciales incorrectas) //
-        if (errorMessage.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Vínculo : Olvidaste tu contraseña //
-        TextButton(onClick = onForgotPasswordClick) {
-            Text("¿Olvidaste tu contraseña?")
-        }
-
-        // Vínculo :Crear cuenta//
-        TextButton(onClick = onRegisterClick) {
-            Text("Crear cuenta")
-        }
+        drawPath(
+            path = bluePath,
+            color = Color(0xFFD4EFFC).copy(alpha = 0.85f)
+        )
     }
 }
 
@@ -108,6 +329,11 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     ComunicadosTheme {
-        LoginScreen(onRegisterClick = {}, onForgotPasswordClick = {}, onLoginSubmit = { _, _ -> }, errorMessage = "")
+        LoginScreen(
+            onRegisterClick = {},
+            onForgotPasswordClick = {},
+            onLoginSubmit = { _, _ -> },
+            errorMessage = ""
+        )
     }
 }

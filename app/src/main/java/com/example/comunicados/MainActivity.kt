@@ -1,7 +1,7 @@
 package com.example.comunicados
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.database.FirebaseDatabase
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val auth = FirebaseAuth.getInstance()
@@ -132,14 +132,21 @@ class MainActivity : ComponentActivity() {
                                     userName = loggedInUserName,
                                     onWriteClick = { navController.navigate("text_communication") },
                                     onSpeakClick = { navController.navigate("speak") },
-                                    onSearchDeviceClick = { }
+                                    onSearchDeviceClick = { navController.navigate("search_device") },
+                                    onTutorialClick = { navController.navigate("tutorial") }
                                 )
+                            }
+                            composable("tutorial") {
+                                TutorialScreen(onBack = { navController.popBackStack() })
                             }
                             composable("text_communication") {
                                 TextCommunicationScreen(onBack = { navController.popBackStack() })
                             }
                             composable("speak") {
                                 SpeakScreen(onBack = { navController.popBackStack() })
+                            }
+                            composable("search_device") {
+                                SearchDeviceScreen(onBack = { navController.popBackStack() })
                             }
                         }
                     }

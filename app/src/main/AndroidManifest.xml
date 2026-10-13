@@ -14,6 +14,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Comunicados">
+        <provider
+            android:name=".QuickPhraseContentProvider"
+            android:authorities="com.example.comunicados.quickphraseprovider"
+            android:exported="false" />
+
+        <receiver
+            android:name=".CueWidgetProvider"
+            android:label="Cue :)"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/cue_widget_info" />
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
